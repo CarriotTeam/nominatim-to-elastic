@@ -2,11 +2,8 @@ package configs
 
 var Config Configuration
 
-type MQTTServer struct {
-	Server   string
-	UserName string
-	Password string
-	Topic    string
+type Nominatim struct {
+	Url string
 }
 
 type Monitor struct {
@@ -16,6 +13,13 @@ type Monitor struct {
 
 type Logger struct {
 	Path string
+}
+
+type Elastic struct {
+	Host     string
+	Port     string
+	Password string
+	Topic    string
 }
 
 type DatabaseConfiguration struct {
@@ -30,8 +34,9 @@ type DatabaseConfiguration struct {
 }
 
 type Configuration struct {
-	MQTTServer MQTTServer
-	Database   DatabaseConfiguration
-	Monitor    Monitor
-	Logger     Logger
+	Elastic   Elastic
+	Database  DatabaseConfiguration
+	Monitor   Monitor
+	Logger    Logger
+	Nominatim Nominatim
 }

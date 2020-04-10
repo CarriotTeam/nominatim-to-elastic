@@ -24,7 +24,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&configFile, "config", "nominatim-to-elastic-configs", "config file")
+	rootCmd.PersistentFlags().StringVar(&configFile, "config", "n2elastic-configs", "config file")
 	rootCmd.PersistentFlags().StringP("author", "a", "Aryan Sadeghi", "aryan.sadeghi225@gmail.com")
 	rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
 	cobra.OnInitialize(initConfig)
@@ -41,8 +41,13 @@ func initConfig() {
 	log.Println("Configuration initialized!")
 	dbProvider, err := services.CreateDBProvider(configs.Config.Database)
 	if err != nil {
-
+		log.Fatal(err)
 	}
 	services.CarDBProvider = dbProvider
+	esProvider, err := services.CreateElasticProvider(configs.Config.Elastic)
+	if err != nil {
+		log.Fatal(err)
+	}
+	services.ElasticProvider = esProvider
 	go services.ServeMonitor()
 }
