@@ -1,0 +1,22 @@
+MQTTServer:
+  server: tcp://test.carriot.ir:1883
+  username: carriot
+  password: Dalton@Gang
+  topic: fleet/#
+
+monitor:
+  port: 2112
+  url: /metrics
+
+logger:
+  path: ./log.log
+
+database:
+  host: localhost
+  port: 5432
+  user: carriot
+  password: Mypass
+  db: localbackup
+  connMaxLifetime: 0
+  maxIdleConns: 10
+  maxOpenConns: 10
