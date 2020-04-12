@@ -5,9 +5,7 @@ import (
 	"sort"
 	"sync"
 	"time"
-
-	log "github.com/sirupsen/logrus"
-
+	"log"
 	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
 
 	"github.com/jinzhu/gorm"
@@ -32,7 +30,7 @@ func CreateDBProvider(config configs.DatabaseConfiguration) (DBProvider, error) 
 		"host=%s port=%d user=%s password=%s dbname=%s", config.Host, config.Port, config.User, config.Password, config.DB))
 
 	if err != nil {
-		log.Info("Error in Create DB: ", err)
+		log.Fatal("Error in Create DB: ", err)
 		return *provider, err
 	}
 	db.DB().SetConnMaxLifetime(time.Minute * time.Duration(config.ConnMaxLifetime))
@@ -77,7 +75,8 @@ func Pop() ([]OSMData, bool) {
 
 func CreateGlobalData() {
 	temp := []OSMData{}
-	DbProvider.DB.Table("placex").Select("place_id ,osm_id , osm_type").Limit(300000).Find(&temp)
+	log.Println("Start `placex` table query.")
+	DbProvider.DB.Table("placex").Select("place_id ,osm_id , osm_type").Limit(70000).Find(&temp)
 	sort.SliceStable(temp, func(i, j int) bool {
 		return temp[i].PlaceId < temp[j].PlaceId
 	})

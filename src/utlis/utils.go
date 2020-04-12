@@ -14,6 +14,7 @@ import (
 var sW sync.WaitGroup
 
 func ServeWorkers() {
+	log.Println("Start Crawling.")
 	for i := 0; i < configs.Config.System.Threads; i++ {
 		sW.Add(1)
 		go worker()

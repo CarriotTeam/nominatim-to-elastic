@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
@@ -11,7 +10,7 @@ import (
 
 func ServeMonitor() {
 	port := configs.Config.Monitor.Port
-	fmt.Println("prometheus agent port : " + port)
+	log.Println("prometheus agent port : " + port)
 	prometheus.MustRegister(StartTime)
 	prometheus.MustRegister(ConnectionStatus)
 	prometheus.MustRegister(MQTTDevices)

@@ -36,7 +36,7 @@ func CalcTime(len int) {
 		if speed != 0 {
 			spendTime := programTimer2.TimeStamp.Sub(StartTime)
 			leftCount := len - programTimer2.Count
-			fmt.Printf("\rspeed : %d per second,left time : %f second ",speed,
+			fmt.Printf("\r speed : %d per second,left time : %f second left.", speed,
 				float64(leftCount)*spendTime.Seconds()/float64(programTimer2.Count))
 		}
 

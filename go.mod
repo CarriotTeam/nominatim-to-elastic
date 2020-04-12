@@ -7,7 +7,6 @@ require (
 	github.com/go-redis/redis v6.15.6+incompatible // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/prometheus/client_golang v0.9.3
-	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.2
 	gitlab.com/carriot-team/datamodel v0.0.0-20200217110957-b8dbacdf48f8 // indirect
