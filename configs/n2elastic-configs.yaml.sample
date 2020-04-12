@@ -2,8 +2,11 @@ monitor:
   port: 2112
   url: /metrics
 
-nominatim:
-  url : localhost
+system:
+  nominatimUrl : localhost
+  threads: 5
+  dataPerRequest : 10
+  nominatimLng : fa
 
 elastic:
   host: localhost

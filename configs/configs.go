@@ -2,8 +2,11 @@ package configs
 
 var Config Configuration
 
-type Nominatim struct {
-	Url string
+type System struct {
+	Url   string
+	Threads        int
+	DataPerRequest int
+	Lng string
 }
 
 type Monitor struct {
@@ -34,9 +37,9 @@ type DatabaseConfiguration struct {
 }
 
 type Configuration struct {
-	Elastic   Elastic
-	Database  DatabaseConfiguration
-	Monitor   Monitor
-	Logger    Logger
-	Nominatim Nominatim
+	Elastic  Elastic
+	Database DatabaseConfiguration
+	Monitor  Monitor
+	Logger   Logger
+	System   System
 }

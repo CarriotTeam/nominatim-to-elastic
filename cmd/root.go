@@ -43,7 +43,7 @@ func initConfig() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	services.CarDBProvider = dbProvider
+	services.DbProvider = dbProvider
 	esProvider, err := services.CreateElasticProvider(configs.Config.Elastic)
 	if err != nil {
 		log.Fatal(err)

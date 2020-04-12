@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
-	"os"
-	"os/exec"
-	"time"
+	"gitlab.com/carriot-team/nominatim-to-elastic/src/app"
 )
 
 var serveCmd = &cobra.Command{
@@ -22,14 +19,5 @@ func init() {
 }
 
 func serve() {
-	//services.ServeLogger()
-	//mqtt.ConnectToMQTT()
-	pid := os.Getegid()
-	for  {
-		cmd := exec.Command(fmt.Sprintf("top -p %d",pid))
-		out , _ := cmd.Output()
-		fmt.Println(string(out))
-		time.Sleep(time.Second)
-	}
-
+	app.App()
 }

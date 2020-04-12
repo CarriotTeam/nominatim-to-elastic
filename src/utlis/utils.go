@@ -3,89 +3,93 @@ package utlis
 import (
 	"encoding/json"
 	"fmt"
+	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
+	"gitlab.com/carriot-team/nominatim-to-elastic/src/services"
 	"log"
+	"net/http"
 	"strings"
-	"time"
-
-	"gitlab.com/carriot-team/datamodel/model"
+	"sync"
 )
 
-type rawData struct {
-	Data []float64 `json:"data"`
+var sW sync.WaitGroup
+
+func ServeWorkers() {
+	for i := 0; i < configs.Config.System.Threads; i++ {
+		sW.Add(1)
+		go worker()
+	}
+	sW.Wait()
 }
 
-func DecodeToDeviceLog(deviceLog []byte, deviceId string) *model.DeviceLog {
-	temp := &rawData{}
-	var message = string(deviceLog)
-	var isEeprom = false
-	if strings.Contains(message, "{eeprom:true}") {
-		message = strings.Split(message, "{eeprom:true}")[0]
-		isEeprom = true
-	}
-	if strings.Contains(message, "{ee}") {
-		message = strings.Split(message, "{ee}")[0]
-		isEeprom = true
-	}
-	err := json.Unmarshal([]byte(message), temp)
-	if err != nil {
-		log.Println(err)
-		return nil
-	}
-	result := temp.jsonToLog(deviceId)
-	result.Eeprom = isEeprom
-	return result
+type NOMINATIMData struct {
+	PlaceID     string `json:"place_id"`
+	OsmType     string `json:"osm_type"`
+	OsmID       string `json:"osm_id"`
+	Lat         string `json:"lat"`
+	Lon         string `json:"lon"`
+	DisplayName string `json:"display_name"`
+	Class       string `json:"class"`
+	Type        string `json:"type"`
+	Importance  string `json:"importance"`
+	Address     struct {
+		Address29   string `json:"address29"`
+		Pedestrian  string `json:"pedestrian"`
+		Suburb      string `json:"suburb"`
+		Road        string `json:"road"`
+		Town        string `json:"town"`
+		City        string `json:"city"`
+		Village     string `json:"village"`
+		Hamlet      string `json:"hamlet"`
+		County      string `json:"county"`
+		State       string `json:"state"`
+		Postcode    string `json:"postcode"`
+		Country     string `json:"country"`
+		CountryCode string `json:"country_code"`
+	} `json:"address"`
 }
 
-func (l *rawData) jsonToLog(deviceId string) *model.DeviceLog {
-	layout := "2006-01-02 15:04:05"
-	stringTime := fmt.Sprintf("%f", l.Data[4])
-	stringTime =
-		stringTime[:4] + // year
-			"-" +
-			stringTime[4:6] + // month
-			"-" +
-			stringTime[6:8] + // day
-			" " +
-			stringTime[8:10] + // hour
-			":" +
-			stringTime[10:12] + // min
-			":" +
-			stringTime[12:14] // sec
-	deviceTime, err := time.Parse(layout, stringTime)
+
+
+func worker() {
+	defer sW.Done()
+	for {
+		osmData, ok := services.Pop()
+		if !ok {
+			break
+		}
+		data, err := sendRequest(stringBuilder(osmData))
+		if err != nil {
+			errHandel(err, osmData)
+		}
+		UpdateTimer(len(data))
+	}
+}
+
+func errHandel(err error, data []services.OSMData) {
+	log.Println(err)
+}
+
+func getBaseUrl() string {
+	return configs.Config.System.Url + "/lookup?format=json&addressdetails=1&accept-language=" + configs.Config.System.Lng + "&osm_ids="
+}
+
+func sendRequest(address string) ([]NOMINATIMData, error) {
+	resp, err := http.Get(address)
 	if err != nil {
-		log.Println(err)
-		return nil
+		return nil, err
 	}
-	var latitude = l.Data[1]
-	var longitude = l.Data[2]
-	if float64(int(l.Data[1]/100)) > 0 {
-		latitude = float64(int(l.Data[1]/100)) + float64(float64(int(l.Data[1])%100)+l.Data[1]-float64(int(l.Data[1])))/60.0
-		longitude = float64(int(l.Data[2]/100)) + float64(float64(int(l.Data[2])%100)+l.Data[2]-float64(int(l.Data[2])))/60.0
+	defer resp.Body.Close()
+	temp := []NOMINATIMData{}
+	// do not handel
+	json.NewDecoder(resp.Body).Decode(&temp)
+	return temp, nil
+}
+
+func stringBuilder(osmData []services.OSMData) string {
+	var sb strings.Builder
+	for _, str := range osmData {
+		sb.WriteString(fmt.Sprintf("%s%d,", str.OSMType, str.OSMId))
 	}
-	response := &model.DeviceLog{
-		ServerTime:     time.Now(),
-		DeviceID:       deviceId,
-		DeviceTime:     deviceTime,
-		Latitude:       latitude,
-		Longitude:      longitude,
-		Altitude:       l.Data[3],
-		Satellites:     int(l.Data[6]),
-		Course:         l.Data[8],
-		SpeedOTG:       float32(l.Data[7]),
-		AccelerationX1: float32(l.Data[9]),
-		AccelerationY1: float32(l.Data[10]),
-		AccelerationZ1: float32(l.Data[11]),
-		AccelerationX2: float32(l.Data[12]),
-		AccelerationY2: float32(l.Data[13]),
-		AccelerationZ2: float32(l.Data[14]),
-		Battery:        l.Data[15] != 0,
-		Signal:         int(l.Data[16]),
-		PowerSupply:    int(l.Data[17]),
-	}
-	if len(l.Data) > 18 {
-		response.CarStatus = (l.Data[18]) != 0
-		response.Humidity = float32(l.Data[19])
-		response.Temp = float32(l.Data[20])
-	}
-	return response
+	osmIds := sb.String()[:sb.Len()-1]
+	return getBaseUrl() + osmIds
 }
