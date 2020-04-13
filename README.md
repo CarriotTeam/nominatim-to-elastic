@@ -16,11 +16,11 @@
 <li> Complete tests </li>
 <li> Add create index and mapping </li>
 
-##Contributing
+## Contributing
 <li> Fork it: https://github.com/CarriotTeam/nominatim-to-elastic/fork </li>
 <li> Create your feature branch: git checkout -b my-new-feature </li>
 <li> Commit your changes: git commit -am 'Add some feature' </li>
 <li> Push to the branch: git push origin my-new-feature </li>
 <li> Submit a pull request!</li>
 
-##License
+## License
