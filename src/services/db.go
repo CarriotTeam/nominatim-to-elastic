@@ -2,11 +2,12 @@ package services
 
 import (
 	"fmt"
+	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
+	"gitlab.com/carriot-team/nominatim-to-elastic/src/utlis"
+	"log"
 	"sort"
 	"sync"
 	"time"
-	"log"
-	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -41,44 +42,40 @@ func CreateDBProvider(config configs.DatabaseConfiguration) (DBProvider, error) 
 	return *provider, nil
 }
 
-type OSMData struct {
-	PlaceId int64  `sql:"column:place_id"`
-	OSMId   int64  `sql:"column:osm_id"`
-	OSMType string `sql:"column:osm_type"`
-}
 
-type GlobalDataType struct {
-	Data []OSMData
-	M    sync.Mutex
-}
 
-var GlobalData GlobalDataType
 
-func Pop() ([]OSMData, bool) {
-	GlobalData.M.Lock()
-	defer GlobalData.M.Unlock()
-	lenData := len(GlobalData.Data)
+
+
+func Pop() ([]utlis.OSMData, bool) {
+	utlis.GlobalData.M.Lock()
+	defer utlis.GlobalData.M.Unlock()
+	lenData := len(utlis.GlobalData.Data)
 	if lenData < 1 {
-		return []OSMData{}, false
+		return []utlis.OSMData{}, false
 	} else if lenData < configs.Config.System.DataPerRequest {
-		element := GlobalData.Data
-		GlobalData.Data = nil
+		element := utlis.GlobalData.Data
+		utlis.GlobalData.Data = nil
 		return element, true
 	} else {
 		index := lenData - (configs.Config.System.DataPerRequest)
 		last := index + configs.Config.System.DataPerRequest
-		element := (GlobalData.Data)[index:last]
-		GlobalData.Data = (GlobalData.Data)[:index]
+		element := (utlis.GlobalData.Data)[index:last]
+		utlis.GlobalData.Data = (utlis.GlobalData.Data)[:index]
 		return element, true
 	}
 }
 
 func CreateGlobalData() {
-	temp := []OSMData{}
+	temp := []utlis.OSMData{}
 	log.Println("Start `placex` table query.")
-	DbProvider.DB.Table("placex").Select("place_id ,osm_id , osm_type").Limit(70000).Find(&temp)
+	DbProvider.DB.Table("placex").Select("place_id ,osm_id , osm_type").Find(&temp)
 	sort.SliceStable(temp, func(i, j int) bool {
 		return temp[i].PlaceId < temp[j].PlaceId
 	})
-	GlobalData = GlobalDataType{Data: temp}
+	utlis.GlobalData = utlis.GlobalDataType{Data: temp}
 }
+
+
+
+

@@ -11,10 +11,11 @@ func App() {
 	start := time.Now()
 	services.CreateGlobalData()
 	log.Printf("Create Global Data in %f second. \n", time.Since(start).Seconds())
-	go utlis.CalcTime(len(services.GlobalData.Data))
-	utlis.ServeWorkers()
+	log.Printf("Get %d ids from DB ",len(utlis.GlobalData.Data))
+	go utlis.CalcTime(len(utlis.GlobalData.Data))
+	services.ServeWorkers()
 	utlis.Timer.Lock.Lock()
 	t := utlis.Timer
 	utlis.Timer.Lock.Unlock()
-	log.Printf("Create %d data in %f second ", t.Count, t.TimeStamp.Sub(utlis.StartTime).Seconds())
+	log.Printf("Index %d data in %f second ", t.Count, t.TimeStamp.Sub(utlis.StartTime).Seconds())
 }

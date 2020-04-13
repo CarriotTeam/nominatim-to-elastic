@@ -39,15 +39,15 @@ func initConfig() {
 	}
 	viper.Unmarshal(&configs.Config)
 	log.Println("Configuration initialized!")
-	dbProvider, err := services.CreateDBProvider(configs.Config.Database)
-	if err != nil {
-		log.Fatal(err)
-	}
-	services.DbProvider = dbProvider
 	esProvider, err := services.CreateElasticProvider(configs.Config.Elastic)
 	if err != nil {
 		log.Fatal(err)
 	}
 	services.ElasticProvider = esProvider
+	dbProvider, err := services.CreateDBProvider(configs.Config.Database)
+	if err != nil {
+		log.Fatal(err)
+	}
+	services.DbProvider = dbProvider
 	go services.ServeMonitor()
 }

@@ -14,9 +14,9 @@ type timerType struct {
 
 var Timer = timerType{Count: 0}
 
-func UpdateTimer(len int) {
+func UpdateTimer(int2 int) {
 	Timer.Lock.Lock()
-	Timer.Count = Timer.Count + len
+	Timer.Count = Timer.Count + int2
 	Timer.TimeStamp = time.Now()
 	Timer.Lock.Unlock()
 }
@@ -36,9 +36,8 @@ func CalcTime(len int) {
 		if speed != 0 {
 			spendTime := programTimer2.TimeStamp.Sub(StartTime)
 			leftCount := len - programTimer2.Count
-			fmt.Printf("\r speed : %d per second,left time : %f second left.", speed,
+			fmt.Printf("speed : %d per second AND %f second left. \r", speed,
 				float64(leftCount)*spendTime.Seconds()/float64(programTimer2.Count))
 		}
-
 	}
 }

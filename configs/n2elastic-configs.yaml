@@ -4,15 +4,15 @@ monitor:
 
 system:
   url : 'http://localhost/nominatim'
-  threads: 5
-  dataPerRequest : 600
+  threads: 6
+  dataPerRequest : 650
   lng : 'fa'
 
 elastic:
   host: localhost
-  port: 9090
+  port: 9831
   password:
-  topic: carriot_geo
+  topic: carriot_simple_geo
 
 logger:
   path: ./log.log
