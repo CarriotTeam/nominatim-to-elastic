@@ -1,8 +1,8 @@
 package app
 
 import (
-	"gitlab.com/carriot-team/nominatim-to-elastic/src/services"
-	"gitlab.com/carriot-team/nominatim-to-elastic/src/utlis"
+	"github.com/CarriotTeam/nominatim-to-elastic/src/services"
+	"github.com/CarriotTeam/nominatim-to-elastic/src/utlis"
 	"log"
 	"time"
 )

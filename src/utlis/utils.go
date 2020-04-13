@@ -3,7 +3,7 @@ package utlis
 import (
 	"encoding/json"
 	"fmt"
-	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
+	"github.com/CarriotTeam/nominatim-to-elastic/configs"
 	"net/http"
 	"strings"
 )

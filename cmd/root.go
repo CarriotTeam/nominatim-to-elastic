@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
-	"gitlab.com/carriot-team/nominatim-to-elastic/src/services"
+	"github.com/CarriotTeam/nominatim-to-elastic/configs"
+	"github.com/CarriotTeam/nominatim-to-elastic/src/services"
 )
 
 var (

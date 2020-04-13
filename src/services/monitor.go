@@ -3,7 +3,7 @@ package services
 import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
+	"github.com/CarriotTeam/nominatim-to-elastic/configs"
 	"log"
 	"net/http"
 )

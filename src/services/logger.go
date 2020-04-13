@@ -1,7 +1,7 @@
 package services
 
 import (
-	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
+	"github.com/CarriotTeam/nominatim-to-elastic/configs"
 	"log"
 	"os"
 )

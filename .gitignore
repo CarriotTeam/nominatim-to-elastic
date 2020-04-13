@@ -3,3 +3,4 @@ vendor/
 ./configs/n2elastic-configs.yaml
 n2elastic
 log.log
+go.sum

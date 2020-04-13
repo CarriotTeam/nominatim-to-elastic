@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/olivere/elastic/v7"
-	"gitlab.com/carriot-team/nominatim-to-elastic/configs"
-	"gitlab.com/carriot-team/nominatim-to-elastic/src/utlis"
+	"github.com/CarriotTeam/nominatim-to-elastic/configs"
+	"github.com/CarriotTeam/nominatim-to-elastic/src/utlis"
 	"log"
 	"sync"
 )

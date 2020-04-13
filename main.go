@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitlab.com/carriot-team/nominatim-to-elastic/cmd"
+	"github.com/CarriotTeam/nominatim-to-elastic/cmd"
 )
 
 func init() {
